@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using JobAlert.Services;
+using JobAlert.Repository.IRepository;
 
 namespace JetAlert;  
 
@@ -38,6 +39,13 @@ class Program
         {
             var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             await db.Database.MigrateAsync();
+            var scraper = scope.ServiceProvider.GetRequiredService<ScraperService>();
+            var jobs = await scraper.ScrapeJobs();
+
+            Console.WriteLine($"Pronađeno {jobs.Count} oglasa.");
+
+            await db.Jobs.AddRangeAsync(jobs);
+            await db.SaveChangesAsync();
         }
 
     }

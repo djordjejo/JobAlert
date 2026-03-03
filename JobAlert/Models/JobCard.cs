@@ -12,7 +12,6 @@ namespace JobAlert.Models
         public string Company { get; set; }
         public string Location { get; set; }
         public DateOnly DatePosted { get; set; }
-        public List<string>? Tehnologies { get; set; }
 
        
     }

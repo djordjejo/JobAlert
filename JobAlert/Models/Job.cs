@@ -11,8 +11,8 @@ namespace JobAlert.Models
         public Guid Id { get; set; }
         public string SiteName { get; set; }
         public bool? Remote { get; set; }
-        public string? Salary { get; set; }
-        public string? JobDescription { get; set; }
+        public decimal? Salary { get; set; }
+        public string JobDescription { get; set; }
 
     }
 }
