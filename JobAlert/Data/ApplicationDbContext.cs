@@ -25,8 +25,8 @@ namespace JobAlert.Data
                 entity.Property(e => e.Title).IsRequired();
                 entity.Property(e => e.Company).IsRequired();
                 entity.Property(e => e.Location).IsRequired();
-                entity.Property(e => e.JobDescription).IsRequired();
-                entity.Property(e => e.Remote).IsRequired();
+                entity.Property(e => e.JobDescription);
+                entity.Property(e => e.Remote);
                 entity.Property(e => e.DatePosted).IsRequired();
                 entity.Property(e => e.SiteName);
                 entity.Property(e => e.Salary).HasColumnType("decimal(18,2)");

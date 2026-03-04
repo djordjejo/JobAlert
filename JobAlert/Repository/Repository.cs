@@ -17,7 +17,7 @@ namespace JobAlert.Repository
         {
             _db = db;
         }
-        public async Task AddJobsAsync(HashSet<Job> enitites)
+        public async Task AddJobsAsync(List<Job> enitites)
         {
             if (enitites.Count <= 0)
             {
