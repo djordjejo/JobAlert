@@ -9,6 +9,6 @@ namespace JobAlert.Repository.IRepository
 {
     public interface IRepository <T>  where T : class
     {
-        public Task AddJobsAsync(List<T> entity);
+        public Task AddJobsAsync(HashSet<T> entity);
     }
 }

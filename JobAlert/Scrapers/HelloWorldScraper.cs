@@ -27,14 +27,14 @@ namespace JobAlert.Repository
             _driver = new ChromeDriver(options);
         }
 
-        public Task<List<Job>> ScrapeJobs()
+        public Task<HashSet<Job>> ScrapeJobs()
         {
             var url = "https://helloworld.rs/oglasi-za-posao/beograd?icampaign=home-fancy-intro&imedium=site&isource=Helloworld.rs&senioritet%5B0%5D=1";
 
             _driver.Navigate().GoToUrl(url);
             Thread.Sleep(2000);
 
-            var jobs = new List<Job>();
+            var jobs = new HashSet<Job>();
 
             var jobCards = _driver.FindElements(By.CssSelector(".__search-results > div"));
 

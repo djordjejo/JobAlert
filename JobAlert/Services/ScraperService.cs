@@ -7,7 +7,7 @@ using OpenQA.Selenium.Support.UI;
 
 namespace JobAlert.Services
 {
-    public class ScraperService : IDisposable
+    public class ScraperService
     {
         private readonly IEnumerable<IJobScraper> _scrapers;
         private readonly IJobRepository _repository;

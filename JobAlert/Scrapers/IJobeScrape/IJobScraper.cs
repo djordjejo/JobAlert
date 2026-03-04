@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace JobAlert.Repository.IRepository
 {
-    internal interface IJobScraper
+    public interface IJobScraper
     {
+        Task<List<Models.Job>> ScrapeJobs();
     }
 }
