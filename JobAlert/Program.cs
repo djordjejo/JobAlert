@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using JobAlert.Services;
 using JobAlert.Repository.IRepository;
 using JobAlert.Repository;
+using JobAlert.Scrapers;
 
 namespace JetAlert;  
 
@@ -33,10 +34,11 @@ class Program
 
                    services.AddScoped<IRepository<Job>, Repository<Job>>();
                    services.AddScoped<IJobScraper, HelloWorldScraper>();
+                   services.AddScoped<IJobScraper, JobertyScraper>();
                })
                .Build();
 
-        Console.WriteLine("✈️  JobAlert - Flight Tracker");
+        Console.WriteLine("✈️  JobAlert - Job Tracker");
         Console.WriteLine("═══════════════════════════════════════════\n");
 
         using (var scope = host.Services.CreateScope())

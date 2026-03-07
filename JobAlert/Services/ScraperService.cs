@@ -21,14 +21,13 @@
 
             public async Task<List<Job>> RunAsync()
             {
-
                 var allJobs = new List<Job>();
 
                 foreach (var scraper in _scrapers)
                     {
                         var jobs = await scraper.ScrapeJobs();
                         allJobs.AddRange(jobs);
-                        await _repository.AddJobsAsync(jobs);
+                        await _repository.SaveJobsAsync(jobs);
                         Console.WriteLine($"Sačuvano {jobs.Count} oglasa.");
                     }
                 return allJobs;

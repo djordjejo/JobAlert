@@ -33,6 +33,7 @@ namespace JobAlert.Data
 
 
             });
+            modelBuilder.Entity<Job>().HasIndex(j => new { j.Title, j.Company, j.SiteName }).IsUnique();
             base.OnModelCreating(modelBuilder);
         }
 

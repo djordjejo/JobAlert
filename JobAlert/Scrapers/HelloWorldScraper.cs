@@ -22,11 +22,11 @@ namespace JobAlert.Repository
         {
             _configuration = configuration;
             var options = new ChromeOptions();
-            //options.AddArgument("--headless=new"); 
+            options.AddArgument("--headless=new"); 
             options.AddArgument("--no-sandbox");
             options.AddArgument("--disable-dev-shm-usage");
             options.AddArgument("--disable-gpu");
-            options.AddArgument("--window-size=1920,1080");
+            options.AddArgument("--window-size=1800,1080");
 
             _driver = new ChromeDriver(options);
         }
@@ -36,11 +36,11 @@ namespace JobAlert.Repository
             var url = "https://helloworld.rs/oglasi-za-posao/beograd?icampaign=home-fancy-intro&imedium=site&isource=Helloworld.rs&senioritet%5B0%5D=1&vreme_postavljanja=2"; //za oglase od pre 2 dana
 
             _driver.Navigate().GoToUrl(url);
-            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
-            wait.Until(d => d.FindElements(By.CssSelector(".__search-results > div")).Count > 0);
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(20));
+            wait.Until(d => d.FindElements(By.CssSelector(".__ga4_job_title")).Count > 0);
             var jobs = new List<Job>();
 
-            var jobCards = _driver.FindElements(By.CssSelector(".__search-results > div"));
+            var jobCards = _driver.FindElements(By.CssSelector(".__search-results .relative.bg-white, .__search-results .relative.bg-transparent"));
 
             foreach (var card in jobCards)
             {
@@ -66,6 +66,7 @@ namespace JobAlert.Repository
                         Company = company,
                         Location = location,
                         DatePosted = dateParsed,
+                        SiteName = "HelloWorld"
                     };
 
                     jobs.Add(job);
