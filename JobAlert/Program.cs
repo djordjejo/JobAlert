@@ -9,6 +9,7 @@ using JobAlert.Services;
 using JobAlert.Repository.IRepository;
 using JobAlert.Repository;
 using JobAlert.Scrapers;
+using OpenQA.Selenium.DevTools.V129.Page;
 
 namespace JetAlert;  
 
@@ -16,32 +17,29 @@ class Program
 {
     static async Task Main(string[] args)
     {
-        var host = Host.CreateDefaultBuilder(args)
-               .ConfigureAppConfiguration((context, config) =>
-               {
-                   config.SetBasePath(Directory.GetCurrentDirectory());
-                   config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-               })
-               .ConfigureServices((context, services) =>
-               {
-                   var connectionString = context.Configuration.GetConnectionString("DefaultConnection");
+        var builder = WebApplication.CreateBuilder(args);
 
-                   services.AddDbContext<ApplicationDbContext>(options =>
-                       options.UseSqlServer(connectionString));
+                builder.Configuration
+                   .SetBasePath(Directory.GetCurrentDirectory())
+                   .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+               
+               
+                   var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-                   services.AddScoped<ScraperService>();
-                   services.AddScoped<NotificationService>();
+                   builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                      options.UseSqlServer(connectionString));
+                   builder.Services.AddScoped<ScraperService>();
+                   builder.Services.AddScoped<NotificationService>();
+                   builder.Services.AddScoped<IRepository<Job>, Repository<Job>>();
+                   builder.Services.AddScoped<IJobScraper, HelloWorldScraper>();
+                   builder.Services.AddScoped<IJobScraper, JobertyScraper>();
 
-                   services.AddScoped<IRepository<Job>, Repository<Job>>();
-                   services.AddScoped<IJobScraper, HelloWorldScraper>();
-                   services.AddScoped<IJobScraper, JobertyScraper>();
-               })
-               .Build();
+        // cors
 
+        var app = builder.Build();
         Console.WriteLine("✈️  JobAlert - Job Tracker");
         Console.WriteLine("═══════════════════════════════════════════\n");
-
-        using (var scope = host.Services.CreateScope())
+        using (var scope = app.Services.CreateScope())
         {
             var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             await db.Database.MigrateAsync();
@@ -49,9 +47,16 @@ class Program
             var jobs = await scraper.RunAsync();
 
             Console.WriteLine($"Pronađeno {jobs.Count} oglasa.");
-
-          
         }
+
+        app.MapGet("/api/jobs/", async ( ApplicationDbContext db) =>
+        {
+            var jobs = await db.Jobs.ToListAsync();
+            if(jobs != null)
+                return Results.Ok(jobs);
+            else
+                return Results.NotFound();
+        });
 
     }
 
