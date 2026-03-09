@@ -13,6 +13,7 @@ namespace JobAlert.Models
         public bool? Remote { get; set; }
         public decimal? Salary { get; set; }
         public string? JobDescription { get; set; }
+        public string? Url { get; set; }
 
     }
 }

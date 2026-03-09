@@ -91,7 +91,10 @@ namespace JobAlert.Scrapers
                 var job = new Job();
                 job.SiteName = "Joberty";
 
-                try { job.Title = driver.FindElement(By.CssSelector("span.text-lg.font-semibold")).Text.Trim(); } catch { }
+                try { 
+                    job.Title = driver.FindElement(By.CssSelector("span.text-lg.font-semibold")).Text.Trim(); 
+                    job.Url = url; 
+                } catch { }
 
                 try { job.Company = driver.FindElement(By.CssSelector("a[href*='it-company']")).Text.Trim(); } catch { }
 

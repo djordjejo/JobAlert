@@ -2,7 +2,6 @@
 using JobAlert.Models;
 using JobAlert.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
-using OpenQA.Selenium.DevTools.V129.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +19,13 @@ namespace JobAlert.Repository
             _db = db;
             _dbSet = _db.Set<Job>();
         }
+
+        public async Task<List<Job>> GetAllJobsAsync()
+        {
+             return await _dbSet.ToListAsync();
+
+        }
+
         public async Task SaveJobsAsync(List<Job> entity)
         {
             var distinctJobs = entity

@@ -29,6 +29,7 @@ namespace JobAlert.Data
                 entity.Property(e => e.Remote);
                 entity.Property(e => e.DatePosted).IsRequired();
                 entity.Property(e => e.SiteName);
+                entity.Property(e => e.Url);
                 entity.Property(e => e.Salary).HasColumnType("decimal(18,2)");
 
 

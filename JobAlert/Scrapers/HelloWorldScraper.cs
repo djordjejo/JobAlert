@@ -31,7 +31,7 @@ namespace JobAlert.Repository
             _driver = new ChromeDriver(options);
         }
 
-        public Task<List<Job>> ScrapeJobs()
+        public async Task<List<Job>> ScrapeJobs()
         {
             var url = "https://helloworld.rs/oglasi-za-posao/beograd?icampaign=home-fancy-intro&imedium=site&isource=Helloworld.rs&senioritet%5B0%5D=1&vreme_postavljanja=2"; //za oglase od pre 2 dana
 
@@ -58,7 +58,7 @@ namespace JobAlert.Repository
                     var dateElement = card.FindElement(By.CssSelector(".la-clock + p"));
                     var dateText = dateElement.Text.Trim();
                     var dateParsed = DateOnly.ParseExact(dateText, "dd.MM.yyyy.", null);
-
+                    var jobUrl = card.FindElement(By.CssSelector("a.__ga4_job_title")).GetAttribute("href");
                     var job = new Job
                     {
                         Id = Guid.NewGuid(),
@@ -66,7 +66,8 @@ namespace JobAlert.Repository
                         Company = company,
                         Location = location,
                         DatePosted = dateParsed,
-                        SiteName = "HelloWorld"
+                        SiteName = "HelloWorld",
+                        Url = jobUrl
                     };
 
                     jobs.Add(job);
@@ -78,7 +79,8 @@ namespace JobAlert.Repository
                 }
             }
 
-            return Task.FromResult(jobs);
+            return await Task.FromResult(jobs);
         }
+      
     }
 }
