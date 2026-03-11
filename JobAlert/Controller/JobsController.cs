@@ -30,5 +30,31 @@ namespace JobAlert.Controller
                 else
                     return await Task.FromResult(NotFound());
         }
+
+        [HttpPost("jooble")]
+        public async Task<IActionResult> GetJoobleAPI()
+        { 
+            var client = new HttpClient();
+            var body = new
+            {
+                keywords = "software developer",
+                location = "United States",
+                page = 1,
+                ResultOnPage = 20
+            };
+
+            var response = await client.PostAsJsonAsync(
+                    "https://jooble.org/api/8f23f6df-6957-4f82-9fb0-ef216a6754a4",
+                    body
+                );
+
+            var data = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"Status: {response.StatusCode}");
+
+            if (!response.IsSuccessStatusCode)
+                return StatusCode((int)response.StatusCode, $"Jooble greška: {response.StatusCode}");
+
+            return Ok(data);
+        }
     }
 }
