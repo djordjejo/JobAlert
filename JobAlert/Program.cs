@@ -25,8 +25,8 @@ class Program
         builder.Services.AddScoped<ScraperService>();
         builder.Services.AddScoped<NotificationService>();
         builder.Services.AddScoped<IRepository<Job>, Repository<Job>>();
-        //builder.Services.AddScoped<IJobScraper, HelloWorldScraper>();
-        //builder.Services.AddScoped<IJobScraper, JobertyScraper>();
+        builder.Services.AddScoped<IJobScraper, HelloWorldScraper>();
+        builder.Services.AddScoped<IJobScraper, JobertyScraper>();
         builder.Services.AddControllers();
 
         // CORS
@@ -49,9 +49,9 @@ class Program
         {
             var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             await db.Database.MigrateAsync();
-          //  var scraper = scope.ServiceProvider.GetRequiredService<ScraperService>();
-            //var jobs = await scraper.RunAsync();
-           // Console.WriteLine($"Pronađeno {jobs.Count} oglasa.");
+            var scraper = scope.ServiceProvider.GetRequiredService<ScraperService>();
+            var jobs = await scraper.RunAsync();
+            Console.WriteLine($"Pronađeno {jobs.Count} oglasa.");
         }
 
         app.UseCors();
