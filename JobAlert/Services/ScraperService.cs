@@ -11,8 +11,8 @@
         public class ScraperService
         {
             private readonly IEnumerable<IJobScraper> _scrapers;
-            private readonly IRepository<Job> _repository;
-            public ScraperService(IEnumerable<IJobScraper> scrapers, IRepository<Job> repository)
+            private readonly IJobRepository _repository;
+            public ScraperService(IEnumerable<IJobScraper> scrapers, IJobRepository repository)
             {
                 _scrapers = scrapers;
                 _repository = repository;

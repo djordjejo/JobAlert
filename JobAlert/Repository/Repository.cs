@@ -10,47 +10,56 @@ using System.Threading.Tasks;
 
 namespace JobAlert.Repository
 {
-    public class Repository<T> : IRepository<Job> where T : class
+    public class Repository<T> : IRepository<T> where T : class
     {
         private readonly ApplicationDbContext _db;
-        private readonly DbSet<Job> _dbSet;
+        private readonly DbSet<T> _dbSetT;
         public Repository(ApplicationDbContext db)
         {
             _db = db;
-            _dbSet = _db.Set<Job>();
+            _dbSetT = _db.Set<T>();
         }
 
-        public async Task<List<Job>> GetAllJobsAsync()
+        public Task AddEntity(T entity)
         {
-             return await _dbSet.ToListAsync();
-
-        }
-
-        public async Task SaveJobsAsync(List<Job> entity)
-        {
-            var distinctJobs = entity
-        .GroupBy(job => new { job.Title, job.Company, job.SiteName })
-        .Select(g => g.First())
-        .ToList();
-
-            var existingJobs = await _db.Jobs
-                .Select(job => new { job.Title, job.Company, job.SiteName })
-                .ToListAsync();
-
-            var newJobs = distinctJobs.Where(job => !existingJobs.Any(e =>
-                e.Title == job.Title &&
-                e.Company == job.Company &&
-                e.SiteName == job.SiteName)).ToList();
-
-            if (!newJobs.Any())
+            return Task.Run(async () =>
             {
-                Console.WriteLine("Nema novih oglasa.");
-                return;
-            }
-
-            await _db.Jobs.AddRangeAsync(newJobs);
-            await _db.SaveChangesAsync();
-            Console.WriteLine($"Sacuvano {newJobs.Count} novih oglasa.");
+                var result = await _dbSetT.AddAsync(entity);
+                if (result == null)
+                    throw new Exception("Failed to add entity to the database.");
+                await _db.SaveChangesAsync();
+            });
         }
+
+        public async Task<List<T>> GetAllAsync()
+        {
+             return await _dbSetT.ToListAsync();
+
+        }
+
+        public async Task<T> GetAsync(Guid id)
+        {
+            return await _dbSetT.FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Id") == id);
+        }
+
+        public Task RemoveEnity(T entity)
+        {
+            return Task.Run(() =>
+            {
+                _dbSetT.Remove(entity);
+                _db.SaveChanges();
+            });
+        }
+
+        public async Task SaveEntity(T entity)
+        {
+            var result = await _dbSetT.AddAsync(entity);
+
+            if (result == null)
+                throw new Exception("Failed to add entity to the database.");
+
+            await _db.SaveChangesAsync();
+        }
+
     }
 }

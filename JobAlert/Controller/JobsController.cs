@@ -23,14 +23,13 @@ namespace JobAlert.Controller
         [HttpGet]
         public async Task<IActionResult> GetAllJobs()
         {
-            var jobs = await _jobRepository.GetAllJobsAsync();
+            var jobs = await _jobRepository.GetAllAsync();
 
                 if(jobs != null)
                     return await Task.FromResult(Ok(jobs));
                 else
                     return await Task.FromResult(NotFound());
         }
-
         [HttpPost("jooble")]
         public async Task<IActionResult> GetJoobleAPI()
         { 
@@ -55,6 +54,23 @@ namespace JobAlert.Controller
                 return StatusCode((int)response.StatusCode, $"Jooble greška: {response.StatusCode}");
 
             return Ok(data);
+        }
+        [HttpDelete("remove/{id}")]
+        public async Task<IActionResult> DeleteApplication(Guid id)
+        {
+            var application = await _jobRepository.GetAsync(id);
+            if (application == null)
+                return NotFound("Application not found.");
+            try
+            {
+                await _jobRepository.RemoveEnity(application);
+                return Ok("Application deleted successfully.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+
         }
     }
 }

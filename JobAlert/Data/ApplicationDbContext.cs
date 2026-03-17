@@ -12,6 +12,7 @@ namespace JobAlert.Data
     public class ApplicationDbContext : DbContext
     {
         public DbSet<Job> Jobs { get; set; }
+        public DbSet<Application> Applications { get; set; }
 
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
@@ -35,7 +36,18 @@ namespace JobAlert.Data
 
             });
             modelBuilder.Entity<Job>().HasIndex(j => new { j.Title, j.Company, j.SiteName }).IsUnique();
+
+
+            modelBuilder.Entity<Application>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(x => x.JobId).IsRequired();
+                entity.Property(x => x.Applied).IsRequired().HasDefaultValue(false);
+
+            });
             base.OnModelCreating(modelBuilder);
+
+
         }
 
 
